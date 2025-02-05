@@ -47,12 +47,12 @@ def main():
         all_datasets, all_features, missing_value_info, error_values_info, wm_range_info = (
             process_hdf5_files(base_path, file_names, target_signals, cutoff_datetime))
         save_features_to_csv(all_features, output_dir)
-        save_errors_to_json(error_values_info, "errors_output_icing.json", output_dir=output_dir)
+        save_errors_to_json(error_values_info, "errors_output_imbalance.json", output_dir=output_dir)
     else:
         print("Features already extracted, skipping processing step.")
 
     combined_data = load_data(output_dir, feature_file_names, cutoff_datetime)
-    error_values_info = load_errors_from_json("errors_output_icing.json",output_dir=output_dir)
+    error_values_info = load_errors_from_json("errors_output_imbalance.json",output_dir=output_dir)
     feature_columns = get_feature_columns(combined_data, target_signals)
 
     (train_dataset, val_dataset, test_dataset,

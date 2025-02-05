@@ -45,7 +45,7 @@ def main():
     error_values_info = load_errors_from_json("errors_output_pitch.json", output_dir=output_dir)
     feature_columns = get_feature_columns(combined_data, target_signals)
 
-    (train_dataset, val_dataset, icing_dataset,
+    (train_dataset, val_dataset, test_dataset,
      fault_record_index, all_record_index, dates_for_legend, all_datetimes) = (
         split_data(combined_data, feature_columns, fault_time, split_time, error_values_info, output_dir))
 
@@ -54,8 +54,8 @@ def main():
     model = AutoEncoderVAE(input_dim)
 
     batch_size = 256
-    train_loader, val_loader, icing_test_loader = create_data_loaders(
-        train_dataset, val_dataset, icing_dataset, batch_size
+    train_loader, val_loader, test_loader = create_data_loaders(
+        train_dataset, val_dataset, test_dataset, batch_size
     )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -68,7 +68,7 @@ def main():
 
     train_re_scores = calculate_re(model, train_loader, device=device)
     val_re_scores = calculate_re(model, val_loader, device=device)
-    test_re_scores = calculate_re(model, icing_test_loader, device=device)
+    test_re_scores = calculate_re(model, test_loader, device=device)
 
     train_HI, val_HI, test_HI, threshold = process_health_indices(train_re_scores, val_re_scores, test_re_scores)
 
